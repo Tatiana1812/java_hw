@@ -7,9 +7,7 @@ import org.example.annotations.Test;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public final class TestRunner {
 
@@ -18,16 +16,17 @@ public final class TestRunner {
      *
      * @param clazz Имя класса с тестами.
      */
+
     public static <T> void run(Class<T> clazz) {
+        Map<Class<? extends Annotation>, List<Method>> annotatedMethodsMap = collectAnnotatedMethods(clazz);
+
         List<TestResult> results = new ArrayList<>();
 
         try {
-            Method[] methods = clazz.getDeclaredMethods();
+            List<Method> testMethods = annotatedMethodsMap.get(Test.class);
 
-            for (Method m : methods) {
-                if (m.isAnnotationPresent(Test.class)) {
-                    results.add(runSingleTest(clazz, m));
-                }
+            for (Method testMethod : testMethods) {
+                results.add(runSingleTest(clazz, testMethod, annotatedMethodsMap));
             }
         } catch (Throwable e) {
             System.err.println("Ошибка при выполнении тестов: " + e.getMessage());
@@ -36,6 +35,29 @@ public final class TestRunner {
         printStatistics(results);
     }
 
+
+    /**
+     * Собирает все методы класса по указанным аннотациям.
+     *
+     * @param clazz класс с тестами
+     * @return карта аннотаций и соответствующих методов
+     */
+    private static Map<Class<? extends Annotation>, List<Method>> collectAnnotatedMethods(Class<?> clazz) {
+        Map<Class<? extends Annotation>, List<Method>> map = new HashMap<>();
+        Method[] declaredMethods = clazz.getDeclaredMethods();
+
+        for (Method method : declaredMethods) {
+            if (method.isAnnotationPresent(Before.class)) {
+                map.computeIfAbsent(Before.class, k -> new ArrayList<>()).add(method);
+            } else if (method.isAnnotationPresent(Test.class)) {
+                map.computeIfAbsent(Test.class, k -> new ArrayList<>()).add(method);
+            } else if (method.isAnnotationPresent(After.class)) {
+                map.computeIfAbsent(After.class, k -> new ArrayList<>()).add(method);
+            }
+        }
+
+        return map;
+    }
     /**
      * Выполнение одного теста.
      *
@@ -43,7 +65,11 @@ public final class TestRunner {
      * @param testMethod Метод, помеченный аннотацией @Test.
      * @return Результат выполнения теста.
      */
-    private static <T> TestResult runSingleTest(Class<T> clazz, Method testMethod) {
+    private static <T> TestResult runSingleTest(
+            Class<T> clazz,
+            Method testMethod,
+            Map<Class<? extends Annotation>, List<Method>> annotatedMethodsMap
+    ) {
         Object instance = null;
         Throwable error = null;
 
@@ -133,8 +159,8 @@ public final class TestRunner {
      * Хранит результат выполнения отдельного теста.
      */
     private static class TestResult {
-        String name;
-        Throwable error;
+        private String name;
+        private Throwable error;
 
         TestResult(String name, Throwable error) {
             this.name = name;
