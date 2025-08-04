@@ -1,6 +1,7 @@
 rootProject.name = "java_hw"
 include(":hw01_gradle")
 include(":hw02_generics")
+include(":hw03_annotations")
 
 pluginManagement {
     val dependencyManagement: String by settings
