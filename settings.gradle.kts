@@ -2,6 +2,8 @@ rootProject.name = "java_hw"
 include(":hw01_gradle")
 include(":hw02_generics")
 include(":hw03_annotations")
+include("hw04_gc")
+include("hw05_byteCodes")
 
 pluginManagement {
     val dependencyManagement: String by settings
@@ -14,4 +16,3 @@ pluginManagement {
         id("com.github.johnrengelman.shadow") version johnrengelmanShadow
     }
 }
-include("hw04_gc")
