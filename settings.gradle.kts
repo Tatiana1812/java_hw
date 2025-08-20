@@ -4,6 +4,7 @@ include(":hw02_generics")
 include(":hw03_annotations")
 include("hw04_gc")
 include("hw05_byteCodes")
+include("hw06_oop")
 include("hw07_patterns")
 
 pluginManagement {
