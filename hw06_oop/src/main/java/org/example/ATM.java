@@ -10,7 +10,7 @@ class ATM {
     private final Map<Banknote, Integer> availableBanknotes;
 
     public ATM(Map<Banknote, Integer> initialBanknotes) {
-        this.availableBanknotes = initialBanknotes;
+        this.availableBanknotes = new EnumMap<>(initialBanknotes);
     }
 
     public void acceptBanknotes(Map<Banknote, Integer> deposits) {
@@ -18,7 +18,7 @@ class ATM {
             var banknote = entry.getKey();
             var count = entry.getValue();
             if (availableBanknotes.containsKey(banknote)) {
-                availableBanknotes.put(banknote, availableBanknotes.get(banknote) + count);
+                availableBanknotes.merge(banknote, count, Integer::sum);
             } else {
                 availableBanknotes.put(banknote, count);
             }
@@ -34,6 +34,7 @@ class ATM {
         return res;
     }
     public Map<Banknote, Integer>  withdraw(int amount) {
+        Map<Banknote, Integer> originalState = new EnumMap<>(availableBanknotes);
         Map<Banknote, Integer> result = new LinkedHashMap<>();
         List<Banknote> sortedBanknotes = new ArrayList<>(availableBanknotes.keySet());
         sortedBanknotes.sort(Comparator.comparingInt(Banknote::getValue).reversed());
@@ -45,6 +46,7 @@ class ATM {
 
             if (count > 0) {
                 result.put(banknote, count);
+                availableBanknotes.put(banknote, availableCount - count);
                 amount -= count * currentNominal;
             }
 
@@ -53,8 +55,9 @@ class ATM {
             }
         }
         if (amount != 0) {
-            logger.error("Невозможно выдать указанную сумму доступными банкнотами.");
-            return Collections.emptyMap();
+            availableBanknotes.clear();
+            availableBanknotes.putAll(originalState);
+            throw new RuntimeException("Невозможно выдать указанную сумму доступными банкнотами.");
         }
         return result;
     }

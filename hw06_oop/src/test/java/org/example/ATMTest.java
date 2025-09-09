@@ -1,14 +1,15 @@
 package org.example;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class ATMTest {
@@ -50,11 +51,10 @@ class ATMTest {
         var withdraw = 5700;
         logger.info("Хотим снять {} c текущего баланса {}", withdraw, oldBalance);
 
-        // when
-        var res = atm.withdraw(withdraw);
-
-        // then
-        assertThat(res).isEqualTo(emptyMap());
+        //when & then
+        Assertions.assertThatThrownBy(() -> atm.withdraw(withdraw))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Невозможно выдать указанную сумму доступными банкнотами");
     }
     @Test
     @DisplayName("Проверяем снятие средств, которые невозможно снять")
@@ -70,17 +70,16 @@ class ATMTest {
         var withdraw = 150;
         logger.info("Хотим снять {} c текущего баланса {}", withdraw, oldBalance);
 
-        // when
-        var res = atm.withdraw(withdraw);
-
-        // then
-        assertThat(res).isEqualTo(emptyMap());
+        //when & then
+        Assertions.assertThatThrownBy(() -> atm.withdraw(withdraw))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Невозможно выдать указанную сумму доступными банкнотами");
     }
     @Test
     @DisplayName("Проверяем снятие средств")
     void withdrawSuccessTest() {
         // given
-        Map<Banknote, Integer> initBanknotes = new HashMap<>(){{
+        Map<Banknote, Integer> initBanknotes = new EnumMap<>(Banknote.class){{
             put(Banknote.FIFTY, 2);
             put(Banknote.THOUSAND, 3);
             put(Banknote.FIVE_HUNDRED, 3);
@@ -94,7 +93,7 @@ class ATMTest {
         var res = atm.withdraw(withdraw);
 
         // then
-        assertThat(res).isEqualTo(new HashMap<>(){{
+        assertThat(res).isEqualTo(new EnumMap<>(Banknote.class){{
             put(Banknote.FIFTY, 1);
             put(Banknote.THOUSAND, 1);
             put(Banknote.FIVE_HUNDRED, 1);
@@ -104,7 +103,7 @@ class ATMTest {
     @DisplayName("Проверяем снятие и приём средств")
     void withdrawAndAcceptSuccessTest() {
         // given
-        Map<Banknote, Integer> initBanknotes = new HashMap<>(){{
+        Map<Banknote, Integer> initBanknotes = new EnumMap<>(Banknote.class){{
             put(Banknote.FIFTY, 10);
             put(Banknote.THOUSAND, 4);
             put(Banknote.FIVE_HUNDRED, 1);
@@ -113,13 +112,12 @@ class ATMTest {
         var oldBalance = atm.getBalance();
         var withdraw = 5550;
 
-        // when
-        var res = atm.withdraw(withdraw);
+        // when & then
+        Assertions.assertThatThrownBy(() -> atm.withdraw(withdraw))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Невозможно выдать указанную сумму доступными банкнотами");
 
-        // then
-        assertThat(res).isEqualTo(emptyMap());
-
-        Map<Banknote, Integer> newBanknotes = new HashMap<>(){{
+        Map<Banknote, Integer> newBanknotes = new EnumMap<>(Banknote.class){{
             put(Banknote.FIVE_THOUSAND, 2);
         }};
 
@@ -130,7 +128,7 @@ class ATMTest {
         assertThat(atm.getBalance()).isEqualTo(oldBalance + getMoney(newBanknotes));
 
         // when
-        res = atm.withdraw(withdraw);
+        var res = atm.withdraw(withdraw);
 
         // then
         assertThat(res).isEqualTo(new HashMap<>(){{
@@ -138,8 +136,6 @@ class ATMTest {
             put(Banknote.FIVE_HUNDRED, 1);
             put(Banknote.FIVE_THOUSAND, 1);
         }});
-
-
     }
     private int getMoney(Map<Banknote, Integer> banknotes) {
         int res = 0;
