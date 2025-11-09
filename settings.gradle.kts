@@ -6,6 +6,11 @@ include("hw04_gc")
 include("hw05_byteCodes")
 include("hw06_oop")
 include("hw07_patterns")
+include("hw09_jdbc")
+include("hw09_jdbc:homework")
+findProject(":hw09_jdbc:homework")?.name = "homework"
+include("hw09_jdbc:demo")
+findProject(":hw09_jdbc:demo")?.name = "demo"
 
 pluginManagement {
     val dependencyManagement: String by settings
