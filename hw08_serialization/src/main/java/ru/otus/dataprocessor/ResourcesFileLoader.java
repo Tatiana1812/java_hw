@@ -26,8 +26,7 @@ public class ResourcesFileLoader implements Loader {
     @Override
     public List<Measurement> load() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(fileName);
-        try {
+        try(InputStream inputStream = classLoader.getResourceAsStream(fileName)) {
             return objectMapper.readValue(inputStream, new TypeReference<List<Measurement>>() {});
         } catch (IOException e) {
             throw new FileProcessException(e);
