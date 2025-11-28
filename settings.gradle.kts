@@ -6,6 +6,7 @@ include("hw04_gc")
 include("hw05_byteCodes")
 include("hw06_oop")
 include("hw07_patterns")
+include("hw08_serialization")
 include("hw09_jdbc")
 include("hw09_jdbc:homework")
 findProject(":hw09_jdbc:homework")?.name = "homework"
