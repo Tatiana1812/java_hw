@@ -3,6 +3,7 @@ package ru.otus.demo;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.cache.CacheKeyWrapper;
 import ru.otus.cache.MyCache;
 import ru.otus.core.repository.DataTemplateHibernate;
 import ru.otus.core.repository.HibernateUtils;
@@ -34,7 +35,7 @@ public class DbServiceDemo {
         ///
         var clientTemplate = new DataTemplateHibernate<>(Client.class);
         ///
-        var dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate, new MyCache<String, Client>());
+        var dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate, new MyCache<CacheKeyWrapper, Client>());
         dbServiceClient.saveClient(new Client("dbServiceFirst"));
 
         var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));

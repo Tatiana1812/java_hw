@@ -10,8 +10,8 @@ import java.util.WeakHashMap;
 
 public class MyCache<K, V> implements HwCache<K, V> {
 
-    private final Logger logger = LoggerFactory.getLogger(MyCache.class);
-    Map<K, V> cache = new WeakHashMap<>();
+    private static final Logger logger = LoggerFactory.getLogger(MyCache.class);
+    private final Map<K, V> cache = new WeakHashMap<>();
     private final List<HwListener<K, V>> listeners = new ArrayList<>();
 
     @Override

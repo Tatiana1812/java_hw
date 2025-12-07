@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.cache.CacheKeyWrapper;
 import ru.otus.cache.ClientListner;
 import ru.otus.cache.HwCache;
 import ru.otus.core.repository.DataTemplate;
@@ -16,9 +17,9 @@ public class DbServiceClientImpl implements DBServiceClient {
 
     private final DataTemplate<Client> clientDataTemplate;
     private final TransactionManager transactionManager;
-    private final HwCache<String, Client> cache;
+    private final HwCache<CacheKeyWrapper, Client> cache;
 
-    public DbServiceClientImpl(TransactionManager transactionManager, DataTemplate<Client> clientDataTemplate, HwCache<String, Client> cache) {
+    public DbServiceClientImpl(TransactionManager transactionManager, DataTemplate<Client> clientDataTemplate, HwCache<CacheKeyWrapper, Client> cache) {
         this.transactionManager = transactionManager;
         this.clientDataTemplate = clientDataTemplate;
         this.cache = cache;
@@ -31,7 +32,7 @@ public class DbServiceClientImpl implements DBServiceClient {
             var clientCloned = client.clone();
             if (client.getId() == null) {
                 var savedClient = clientDataTemplate.insert(session, clientCloned);
-                var wrappedKey = Long.toString(savedClient.getId());
+                var wrappedKey = new CacheKeyWrapper(savedClient.getId());
                 cache.put(wrappedKey, savedClient);
                 log.info("created client: {}", clientCloned);
                 return savedClient;
@@ -45,7 +46,7 @@ public class DbServiceClientImpl implements DBServiceClient {
     @Override
     public Optional<Client> getClient(long id) {
         return transactionManager.doInReadOnlyTransaction(session -> {
-            var cachedClient = cache.get(Long.toString(id));
+            var cachedClient = cache.get(new CacheKeyWrapper(id));
             if(cachedClient != null) {
                 return Optional.of(cachedClient);
             }
