@@ -13,6 +13,7 @@ findProject(":hw09_jdbc:homework")?.name = "homework"
 include("hw09_jdbc:demo")
 findProject(":hw09_jdbc:demo")?.name = "demo"
 include("hw10_jpql")
+include("hw12_web")
 
 pluginManagement {
     val dependencyManagement: String by settings
