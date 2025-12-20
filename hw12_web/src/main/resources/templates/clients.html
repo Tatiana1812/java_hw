@@ -1,90 +1,55 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
-    <title>Клиенты</title>
-    <script>
-        function getClientById() {
-            const clientIdTextBox = document.getElementById('clientIdTextBox');
-            const clientTableBody = document.querySelector('#clientTable tbody');
-
-             const id = userIdTextBox.value;
-             fetch(`/api/client/${id}`)
-              .then(response => response.json())
-              .then(data => {
-              if (data.length === undefined) data = [data];
-                data.forEach(client => {
-                    let row = `
-                        <tr>
-                            <td>${client.id || ''}</td>
-                            <td>${client.name || ''}</td>
-                            <td>${client.address || ''}</td>
-                            <td>${client.phones || ''}</td>
-                        </tr>
-                    `;
-                    clientTableBody.insertAdjacentHTML("beforeend", row);
-                });
-            })
-            .catch(error => console.error('Ошибка:', error));
-        }
-
-        async function loadAllClients() {
-            const allClientsTableBody = document.querySelector('#allClientsTable tbody');
-            try {
-                const response = await fetch('/api/clients');
-                const users = await response.json();
-
-                if (clients) {
-                    clients.forEach(client => {
-                        let row = `
-                            <tr>
-                                <td>${client.id || ''}</td>
-                                <td>${client.name || ''}</td>
-                                <td>${client.address || ''}</td>
-                                <td>${client.phones || ''}</td>
-                            </tr>
-                        `;
-                        allClientsTableBody.insertAdjacentHTML("beforeend", row);
-                    });
-                }
-            } catch (err) {
-                console.error(err.message);
-            }
-        }
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients List</title>
 </head>
-
 <body>
-<h4>Получить клиента по id</h4>
-<input type="text" id="clientIdTextBox" value="1" placeholder="Введите id клиента">
-<button onclick="getClientById()">Получить</button>
-<div id="clientTableDiv">
-    <table id="clientTable" border="1" cellspacing="0" width="80%">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Имя</th>
-            <th>Адрес</th>
-            <th>Номер телефона</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+<div class="header">
+    <h1>Clients</h1>
 </div>
-
-<h4>Список всех клиентов</h4>
-<button onclick="loadAllClients()">Загрузить всех клиентов</button>
-<div id="allClientsTableDiv">
-    <table id="allClientsTable" border="1" cellspacing="0" width="80%">
+<div class="sidebar">
+    <form action="client/create" method="post">
+        <label>
+            Name <br/>
+            <input type="text" name="name">
+        </label><br/>
+        <label>
+            Address <br/>
+            <input type="text" name="address">
+        </label><br/>
+        <label for="phones">Phones:</label><br/>
+        <textarea id="phones" name="phones" rows="5" cols="32"></textarea>
+        <br/><br/>
+        <input type="submit" value="Create client">
+    </form>
+</div>
+<div class="container">
+    <#if clients?? && clients?size gt 0>
+    <table>
         <thead>
         <tr>
             <th>ID</th>
-            <th>Имя</th>
-            <th>Адрес</th>
-            <th>Номер телефона</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Phone</th>
         </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+        <#list clients as client>
+        <tr>
+            <td>${client.id}</td>
+            <td>${client.name}</td>
+            <td><#if client.address??>${client.address.street}</#if></td>
+            <td><#if client.phones?? && client.phones?size gt 0>${client.phones[0].number}</#if></td>
+        </tr>
+        </#list>
+        </tbody>
     </table>
+    <#else>
+    <p>No clients found.</p>
+</#if>
 </div>
 </body>
 </html>

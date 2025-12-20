@@ -51,7 +51,7 @@ public class ClientsWebServerSimple implements ClientsWebServer {
 
         Handler.Sequence sequence = new Handler.Sequence();
         sequence.addHandler(resourceHandler);
-        sequence.addHandler(applySecurity(servletContextHandler, "/clients", "/api/client/create"));
+        sequence.addHandler(applySecurity(servletContextHandler, "/clients", "/client/create"));
 
         server.setHandler(sequence);
     }
@@ -73,7 +73,7 @@ public class ClientsWebServerSimple implements ClientsWebServer {
     private ServletContextHandler createServletContextHandler() {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         servletContextHandler.addServlet(new ServletHolder(new ClientsServlet(templateProcessor, clientService)), "/clients");
-        servletContextHandler.addServlet(new ServletHolder(new ClientsApiServlet(clientService)), "/api/client/create");
+        servletContextHandler.addServlet(new ServletHolder(new ClientsApiServlet(clientService)), "/client/create");
         return servletContextHandler;
     }
 }

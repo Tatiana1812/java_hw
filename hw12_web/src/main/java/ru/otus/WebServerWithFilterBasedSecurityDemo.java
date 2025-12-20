@@ -65,8 +65,8 @@ public class WebServerWithFilterBasedSecurityDemo {
                 new Address(null, "Ukhtomskogo"),
                 List.of(new Phone(null, "88005553535"),
                 new Phone(null, "788199")),
-                "vasya35",
-                "12345"));
+                "user7",
+                "11111"));
 
         dbServiceClient.saveClient((new Client(null,
                 "Katya",

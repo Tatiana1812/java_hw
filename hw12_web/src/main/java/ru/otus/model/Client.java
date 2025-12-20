@@ -1,12 +1,12 @@
 package ru.otus.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -29,7 +29,6 @@ public class Client implements Cloneable {
 
     @Column(name = "password")
     private String password;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
@@ -53,7 +52,6 @@ public class Client implements Cloneable {
         setAddress(address);
         setPhones(phones);
     }
-
     public Client(Long id, String name, Address address, List<Phone> phones, String login, String password) {
         this.id = id;
         this.name = name;
@@ -61,6 +59,7 @@ public class Client implements Cloneable {
         setPhones(phones);
         this.login = login;
         this.password = password;
+
     }
     public void setAddress(Address address) {
         this.address = address;
@@ -79,7 +78,7 @@ public class Client implements Cloneable {
     @SuppressWarnings({"java:S2975", "java:S1182"})
     public Client clone() {
         List<Phone> newPhones = new ArrayList<>();
-        if (!this.phones.isEmpty()) {
+        if (this.phones != null && !this.phones.isEmpty()) {
             for (Phone phone: phones) {
                 newPhones.add(phone.clone());
             }
@@ -87,8 +86,10 @@ public class Client implements Cloneable {
         return new Client(
                 this.id,
                 this.name,
-                this.address.clone(),
-                newPhones
+                this.address != null ? this.address.clone() : null,
+                newPhones,
+                this.login,
+                this.password
         );
     }
 
