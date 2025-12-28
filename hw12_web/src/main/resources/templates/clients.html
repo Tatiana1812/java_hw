@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients List</title>
+</head>
+<body>
+<div class="header">
+    <h1>Clients</h1>
+</div>
+<div class="sidebar">
+    <!-- Форма добавления клиентов -->
+    <form action="client/create" method="post">
+        <label>
+            Name <br/>
+            <input type="text" name="name">
+        </label><br/>
+        <label>
+            Address <br/>
+            <input type="text" name="address">
+        </label><br/>
+        <label for="phones">Phones:</label><br/>
+        <textarea id="phones" name="phones" rows="5" cols="32"></textarea>
+        <br/><br/>
+        <input type="submit" value="Create client">
+    </form>
+</div>
+<div class="container">
+    <#if clients?? && clients?size gt 0>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Phones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <#list clients as client>
+        <tr>
+            <td>${client.id}</td>
+            <td>${client.name}</td>
+            <td><#if client.address??>${client.address.street}</#if></td>
+            <td>
+                <ul style="margin-top: 0; padding-left: 20px; list-style-type: disc;">
+                    <#if client.phones?? && client.phones?size gt 0>
+                    <#list client.phones as phone>
+                    <li>${phone.number}</li>
+                </#list>
+                <#else>
+                No phones available
+            </#if>
+            </ul>
+            </td>
+        </tr>
+        </#list>
+        </tbody>
+    </table>
+    <#else>
+    <p>No clients found.</p>
+</#if>
+</div>
+</body>
+</html>
