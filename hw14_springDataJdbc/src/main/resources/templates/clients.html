@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Клиенты</title>
+    <!-- Подключаем Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Список клиентов</h1>
+
+    <!-- Таблица для отображения списка клиентов -->
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Имя</th>
+            <th scope="col">Адрес</th>
+            <th scope="col">Телефоны</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Перебираем коллекцию клиентов -->
+        <tr th:each="client : ${clients}">
+            <td th:text="${client.getId()}"></td>
+            <td th:text="${client.getName()}"></td>
+            <td th:text="${client.getAddress().street}"></td>
+            <td>
+                <!-- Перебор телефонов -->
+                <ul style="list-style-type:none; padding-left:0;" th:unless="${#lists.isEmpty(client.getPhones())}">
+                    <li th:each="phone : ${client.getPhones()}"><span th:text="${phone.number}"></span></li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Форма для создания нового клиента -->
+    <form method="post" action="/client/create" th:object="${newClient}" class="mt-5 needs-validation" novalidate>
+        <div class="mb-3">
+            <label for="nameInput" class="form-label">Имя:</label>
+            <input type="text" class="form-control" id="nameInput" required th:field="*{name}"/>
+            <div class="invalid-feedback">Это обязательное поле.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="addressStreetInput" class="form-label">Адрес:</label>
+            <input type="text" class="form-control" id="addressStreetInput" required th:field="*{addressStreet}"/>
+            <div class="invalid-feedback">Это обязательное поле.</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Телефоны:</label>
+            <div id="phoneInputsContainer">
+                <div class="input-group mb-3">
+                    <input type="tel" class="form-control" id="phonesNumberInput_0" name="phoneNumbers[]" pattern="^[+]?[\d\s()-]+$" title="Номер телефона" required/>
+                    <button type="button" onclick="addPhoneInput()" class="btn btn-outline-success ms-2">Добавить телефон</button>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Создать клиента</button>
+    </form>
+
+    <!-- Скрипт для добавления новых полей -->
+    <script>
+        let phoneIndex = 1; // Начальное значение индекса
+
+        function addPhoneInput() {
+            const container = document.querySelector('#phoneInputsContainer');
+            const inputGroup = document.createElement('div');
+            inputGroup.classList.add('input-group', 'mb-3');
+            inputGroup.innerHTML = `
+                <input type="tel" class="form-control" id="phonesNumberInput_${phoneIndex++}" name="phoneNumbers[]" pattern="^[+]?[\d\s()-]+$" title="Номер телефона" required/>
+            `;
+            container.appendChild(inputGroup);
+        }
+    </script>
+</div>
+
+<!-- Подключение Bootstrap JS и Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
