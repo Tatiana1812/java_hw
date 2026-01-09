@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package ru.otus.protobuf;
+
+option java_multiple_files = true;
+
+service NumbersService {
+  rpc GetNumbers(NumberRequest) returns (stream NumberResponse);
+}
+
+message NumberRequest {
+  int32 firstValue = 1;
+  int32 lastValue = 2;
+}
+
+message NumberResponse {
+  int32 value = 1;
+}
