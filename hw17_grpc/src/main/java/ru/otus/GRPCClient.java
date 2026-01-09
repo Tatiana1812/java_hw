@@ -2,6 +2,8 @@ package ru.otus;
 
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.otus.protobuf.NumberRequest;
 import ru.otus.protobuf.NumberResponse;
 import ru.otus.protobuf.NumbersServiceGrpc;
@@ -11,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @SuppressWarnings({"squid:S106", "squid:S2142"})
 public class GRPCClient {
-
+    private static final Logger logger = LoggerFactory.getLogger(GRPCClient.class);
     private static final String SERVER_HOST = "localhost";
     private static final int SERVER_PORT = 8190;
 
@@ -33,30 +35,31 @@ public class GRPCClient {
                     @Override
                     public void onNext(NumberResponse response) {
                         newValue.set(response.getValue());
-                        System.out.println("Получено число от сервера: " + newValue);
+                        logger.info("Получено число от сервера: {}", newValue);
                     }
 
                     @Override
                     public void onError(Throwable t) {
                         System.err.println("Ошибка при получении чисел: " + t.getMessage());
+                        logger.error("Ошибка при получении чисел: {}", t.getMessage());
                         latch.countDown();
                     }
 
                     @Override
                     public void onCompleted() {
-                        System.out.println("Поток чисел завершён.");
+                        logger.info("Поток чисел завершён.");
                         latch.countDown();
                     }
                 });
 
         while (latestReceivedFromServer.get() != request.getLastValue()) {
             if (latestReceivedFromServer.get() < newValue.get()) {
-                currentValue += newValue.get() + 1;
+                currentValue += newValue.getAndSet(0) + 1;
                 latestReceivedFromServer = newValue;
             } else {
                 currentValue++;
             }
-            System.out.println("Текущее значение: " + currentValue);
+            logger.info("Текущее значение: {}", currentValue);
 
             delay();
         }
@@ -68,7 +71,7 @@ public class GRPCClient {
         try {
             Thread.sleep(1000L);
         } catch (InterruptedException e) {
-            System.out.println("Thread interrupted!");
+            logger.info("Thread interrupted!");
         }
     }
 }
