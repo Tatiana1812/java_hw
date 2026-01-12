@@ -17,6 +17,7 @@ include("hw11_cache")
 include("hw12_web")
 include("hw13_di")
 include("hw14_springDataJdbc")
+include("hw16_queue")
 include("hw15_executors")
 include("hw17_grpc")
 
