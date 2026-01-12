@@ -16,17 +16,20 @@ include("hw10_jpql")
 include("hw11_cache")
 include("hw12_web")
 include("hw13_di")
+include("hw14_springDataJdbc")
 include("hw15_executors")
-include("hw16_queue")
+include("hw17_grpc")
 
 pluginManagement {
     val dependencyManagement: String by settings
     val johnrengelmanShadow: String by settings
     val springframeworkBoot: String by settings
+    val protobufVer: String by settings
 
     plugins {
         id("org.springframework.boot") version springframeworkBoot
         id("io.spring.dependency-management") version dependencyManagement
         id("com.github.johnrengelman.shadow") version johnrengelmanShadow
+        id("com.google.protobuf") version protobufVer
     }
 }
