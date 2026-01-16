@@ -20,6 +20,11 @@ include("hw14_springDataJdbc")
 include("hw16_queue")
 include("hw15_executors")
 include("hw17_grpc")
+include("hw18_webflux")
+include("hw18_webflux:client-service")
+findProject(":hw18_webflux:client-service")?.name = "client-service"
+include("hw18_webflux:datastore-service")
+findProject(":hw18_webflux:datastore-service")?.name = "datastore-service"
 
 pluginManagement {
     val dependencyManagement: String by settings
