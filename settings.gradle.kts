@@ -25,6 +25,7 @@ include("hw18_webflux:client-service")
 findProject(":hw18_webflux:client-service")?.name = "client-service"
 include("hw18_webflux:datastore-service")
 findProject(":hw18_webflux:datastore-service")?.name = "datastore-service"
+include("hw19_project")
 
 pluginManagement {
     val dependencyManagement: String by settings

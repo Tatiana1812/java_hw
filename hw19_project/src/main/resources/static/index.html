@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <title>Home</title>
+</head>
+<body>
+<script src="/assets/auth.js"></script>
+<script>
+  (async () => {
+    const me = await getProfileOrNull();
+    window.location.href = me ? "/app.html" : "/login.html";
+  })();
+</script>
+</body>
+</html>

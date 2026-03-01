@@ -1,0 +1,15 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5430/demoDB
+    username: usr
+    password: pwd
+  profiles:
+    active: dev, test
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    ru.otus.service.ReservationService: DEBUG
