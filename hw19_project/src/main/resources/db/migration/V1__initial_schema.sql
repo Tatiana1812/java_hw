@@ -33,4 +33,3 @@ create table reservations
     time_slot tsrange generated always as (tsrange(start_time, end_time, '[)')) stored,
     EXCLUDE USING GIST (table_id WITH =, time_slot WITH &&) WHERE (status = 'CONFIRMED')
 );
-create extension if not exists btree_gist;

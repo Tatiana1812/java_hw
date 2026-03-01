@@ -10,7 +10,6 @@ public record ReservationRequest(
         String guestName,
         @NotBlank @Size(min = 5, max = 64)
         String guestPhone,
-        @Min(value = 1)
         @Max(value = 8)
         @Positive
         int persons,
