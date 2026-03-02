@@ -28,4 +28,5 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
     implementation ("org.flywaydb:flyway-database-postgresql:10.4.1")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14")
 }

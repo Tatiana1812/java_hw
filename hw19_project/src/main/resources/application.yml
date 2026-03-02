@@ -10,6 +10,12 @@ spring:
   flyway:
     enabled: true
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui
+
 logging:
   level:
     ru.otus.service.ReservationService: DEBUG
