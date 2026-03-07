@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class AuthServiceTest extends PostgresContainerBase {
+class AuthServiceImplTest extends PostgresContainerBase {
 
      @Autowired
      UsersRepository usersRepository;

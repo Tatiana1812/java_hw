@@ -26,7 +26,7 @@ import static ru.otus.enums.ReservationStatus.CONFIRMED;
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ReservationServiceTest extends PostgresContainerBase {
+class ReservationServiceImplTest extends PostgresContainerBase {
 
     @Autowired
     ReservationService reservationService;
