@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <title>Регистрация</title>
+    <style>
+    .box{max-width:420px;margin:40px auto;font-family:sans-serif}
+    input{width:100%;padding:8px;margin:6px 0}
+    button{width:100%;padding:10px 12px;margin-top:8px}
+    .err{color:#b00020}
+    .muted{color:#666;font-size:13px}
+  </style>
+</head>
+<body>
+<div class="box">
+    <h1>Регистрация</h1>
+
+    <form id="regForm">
+        <input id="login" placeholder="Логин" required minlength="3"/>
+        <input id="password" placeholder="Пароль" type="password" required minlength="6"/>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+
+    <p id="msg" class="err"></p>
+    <p class="muted"><a href="/login.html">Назад ко входу</a></p>
+</div>
+
+<script src="/assets/auth.js"></script>
+<script>
+  (async () => {
+    const me = await getProfileOrNull();
+    if (me) window.location.href = "/app.html";
+  })();
+
+  document.getElementById("regForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    document.getElementById("msg").textContent = "";
+
+    const login = document.getElementById("login").value.trim();
+    const password = document.getElementById("password").value;
+
+    const regRes = await registerRequest(login, password);
+
+    if (regRes.status === 201) {
+      const loginRes = await loginRequest(login, password);
+      window.location.href = (loginRes.status === 200) ? "/app.html" : "/login.html";
+    } else if (regRes.status === 409) {
+      document.getElementById("msg").textContent = "Логин уже занят";
+    } else {
+      const text = await regRes.text().catch(() => "");
+      document.getElementById("msg").textContent =
+        `Ошибка регистрации (HTTP ${regRes.status}) ${text ? "- " + text : ""}`;
+    }
+  });
+</script>
+</body>
+</html>

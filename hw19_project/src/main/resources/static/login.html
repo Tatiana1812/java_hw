@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <title>Вход</title>
+    <style>
+    .box{max-width:420px;margin:40px auto;font-family:sans-serif}
+    input{width:100%;padding:8px;margin:6px 0}
+    button{width:100%;padding:10px 12px;margin-top:8px}
+    .err{color:#b00020}
+    .muted{color:#666;font-size:13px}
+  </style>
+</head>
+<body>
+<div class="box">
+    <h1>Вход</h1>
+    <div class="muted">Введите логин и пароль.</div>
+
+    <form id="loginForm">
+        <input id="login" placeholder="Логин" required minlength="3"/>
+        <input id="password" placeholder="Пароль" type="password" required minlength="6"/>
+        <button type="submit">Войти</button>
+    </form>
+
+    <p id="msg" class="err"></p>
+    <p class="muted">Нет аккаунта? <a href="/register.html">Регистрация</a></p>
+</div>
+
+<script src="/assets/auth.js"></script>
+<script>
+  (async () => {
+    const me = await getProfileOrNull();
+    if (me) window.location.href = "/app.html";
+  })();
+
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    document.getElementById("msg").textContent = "";
+
+    const login = document.getElementById("login").value.trim();
+    const password = document.getElementById("password").value;
+
+    const res = await loginRequest(login, password);
+
+    if (res.status === 200) {
+      window.location.href = "/app.html";
+    } else if (res.status === 401) {
+      document.getElementById("msg").textContent = "Неверный логин или пароль";
+    } else {
+      document.getElementById("msg").textContent = `Ошибка входа (HTTP ${res.status})`;
+    }
+  });
+</script>
+</body>
+</html>
