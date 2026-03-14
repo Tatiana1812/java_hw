@@ -17,6 +17,9 @@ import ru.otus.sessionmanager.TransactionManager;
 
 import java.time.LocalDateTime;
 
+/**
+ * Сервис регистрации и входа пользователя.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
@@ -26,6 +29,12 @@ public class AuthServiceImpl implements AuthService{
     private final AuthenticationManager authenticationManager;
     private final TransactionManager transactionManager;
 
+    /**
+     * Регистрирует пользователя: хеширует пароль и сохраняет в БД.
+     *
+     * @param req - логин/пароль
+     * @return сохранённая сущность пользователя
+     */
     public Users register(AuthRequest req) {
         Users user = new Users();
         user.setLogin(req.login());
@@ -35,6 +44,12 @@ public class AuthServiceImpl implements AuthService{
         return user;
     }
 
+    /**
+     * Выполняет аутентификацию и сохраняет результат в HTTP-сессии.
+     *
+     * @param req - логин/пароль
+     * @param request - HTTP-запрос
+     */
     public void login(AuthRequest req, HttpServletRequest request) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.login(), req.password())
@@ -50,6 +65,12 @@ public class AuthServiceImpl implements AuthService{
         );
     }
 
+    /**
+     * Возвращает профиль текущего пользователя.
+     *
+     * @param auth - объект аутентификации
+     * @return ответ с id и логином
+     */
     public AuthResponse profile(Authentication auth) {
         if (auth == null || !auth.isAuthenticated()) {
             throw new UnauthorizedException();

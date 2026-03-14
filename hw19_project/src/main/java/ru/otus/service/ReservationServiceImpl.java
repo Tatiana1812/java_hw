@@ -23,6 +23,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Сервис бронирования столиков.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -35,6 +38,15 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationsRepository reservationsRepository;
     private final TransactionManager transactionManager;
 
+    /**
+     * Создаёт бронирование для текущего пользователя.
+     *
+     * <p>Длительность брони по умолчанию: 3 часа ({@link #DEFAULT_DURATION}).</p>
+     *
+     * @param req - параметры брони
+     * @param auth - аутентификация пользователя
+     * @return созданная бронь
+     */
     public ReservationResponse createReservation(ReservationRequest req, Authentication auth) {
         Users user = usersRepository.findByLogin(auth.getName())
                 .orElseThrow(UnauthorizedException::new);
@@ -45,6 +57,12 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationProcess(req, start, end, user);
     }
 
+    /**
+     * Возвращает список броней текущего пользователя.
+     *
+     * @param auth - аутентификация пользователя
+     * @return список всех броней
+     */
     public List<ReservationResponse> getAllReservations(Authentication auth) {
         if (auth == null || !auth.isAuthenticated()) {
             throw new UnauthorizedException();
@@ -65,6 +83,12 @@ public class ReservationServiceImpl implements ReservationService {
                 )).toList();
     }
 
+    /**
+     * Отменяет бронь пользователя.
+     *
+     * @param reservationId - id брони
+     * @param auth - аутентификация пользователя
+     */
     public void cancelReservation(Long reservationId, Authentication auth) {
         if (auth == null || !auth.isAuthenticated()) {
             throw new UnauthorizedException();

@@ -5,6 +5,15 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+/**
+ * DTO запроса на создание бронирования.
+ *
+ * @param guestName - имя гостя для конкретной брони.
+ * @param guestPhone - телефон гостя для конкретной брони
+ * @param persons - количество гостей(1-8)
+ * @param startTime - дата и время начала бронирования
+ *
+ */
 public record ReservationRequest(
         @NotBlank @Size(min = 2, max = 50)
         String guestName,
